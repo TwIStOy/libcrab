@@ -63,7 +63,7 @@ set_target_properties(crab PROPERTIES LINKER_LANGUAGE CXX)
 target_compile_options(crab PUBLIC ${PEDANTIC_COMPILE_FLAGS} ${WERROR_FLAG})
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    target_compile_options(crab PUBLIC -fcoroutine)
+    target_compile_options(crab PUBLIC -fcoroutines)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
