@@ -22,3 +22,8 @@ _deps
 /.clwb/
 
 /build/
+# cmake-language-server files
+/.cmake/
+
+# clang cache
+/.cache/
