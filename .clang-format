@@ -1,0 +1,55 @@
+---
+BasedOnStyle: Google
+IndentWidth: 2
+---
+Language: Cpp
+AlwaysBreakTemplateDeclarations: true
+SpaceAfterTemplateKeyword: false
+DerivePointerAlignment: false
+PointerAlignment: Right
+UseTab: Never
+AlignConsecutiveMacros: true
+AlignEscapedNewlines: Right
+AllowAllArgumentsOnNextLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: None
+AllowShortLoopsOnASingleLine: false
+AlignConsecutiveAssignments: true
+BreakBeforeConceptDeclarations: Always
+RequiresClausePosition: OwnLine
+IndentRequiresClause: true
+RequiresExpressionIndentation: OuterScope
+BreakBeforeBraces: Attach
+SpaceBeforeCpp11BracedList: true
+TypenameMacros: ['TYPEOF']
+AttributeMacros: ['ALWAYS_INLINE']
+IfMacros: ['IF_NOT_NULL']
+AlignAfterOpenBracket: Align
+BinPackArguments: false
+BinPackParameters: false
+BreakAfterAttributes: Never
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: AfterComma
+BreakStringLiterals: true
+EmptyLineBeforeAccessModifier: LogicalBlock
+ShortNamespaceLines: 0
+IncludeBlocks: Preserve
+IndentPPDirectives: AfterHash
+InsertNewlineAtEOF: true
+IntegerLiteralSeparator:
+  Binary: -1
+  Decimal: 3
+  DecimalMinDigits: 5
+  Hex: -1
+MacroBlockBegin: "^.*_BEGIN$"
+MacroBlockEnd: "^.*_END$"
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: None
+PackConstructorInitializers: Never
+SeparateDefinitionBlocks: Always
+---
+Language: Proto
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AllowShortFunctionsOnASingleLine: None
