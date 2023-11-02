@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace crab::core::details {
+namespace crab::core::cpo {
 
 namespace __tag_invoke_impl {  // NOLINT
 void tag_invoke();
@@ -53,4 +53,15 @@ template<class Tag, class... Args>
 using tag_invoke_result_t =
     std::invoke_result_t<decltype(tag_invoke), Tag, Args...>;
 
-}  // namespace crab::core::details
+}  // namespace crab::core::cpo
+
+namespace crab::core {
+
+using cpo::nothrow_tag_invocable;
+using cpo::nothrow_tag_invocable_v;
+using cpo::tag_invocable;
+using cpo::tag_invoke;
+using cpo::tag_invoke_result_t;
+using cpo::tag_t;
+
+}  // namespace crab::core

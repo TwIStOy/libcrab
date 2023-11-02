@@ -59,6 +59,24 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     set(WERROR_FLAG -Werror)
 endif()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(PEDANTIC_COMPILE_FLAGS
+        -Wformat=2
+        -Wstrict-aliasing
+        -Wall
+        -Wextra
+        -Wtrigraphs
+        -Wuninitialized
+        -Wwrite-strings
+        -Wpointer-arith
+        -Wredundant-decls
+        -Wunused
+        -Wmissing-include-dirs
+        -Wno-missing-field-initializers
+    )
+    set(WERROR_FLAG -Werror)
+endif()
+
 add_library(crab)
 add_library(crab::crab ALIAS crab)
 
