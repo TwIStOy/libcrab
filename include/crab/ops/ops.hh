@@ -3,6 +3,4 @@
 
 #pragma once  // NOLINT(build/header_guard)
 
-#include "crab/result/result.hh"
-#include "crab/core/core.hh"
-#include "crab/ops/ops.hh"
+#include "crab/ops/details/fn_once.hh"

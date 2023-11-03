@@ -4,3 +4,4 @@
 #pragma once  // NOLINT(build/header_guard)
 
 #include "crab/core/details/tag_invoke.hh"
+#include "crab/core/details/safe_object.hh"
