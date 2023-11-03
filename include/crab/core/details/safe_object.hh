@@ -9,25 +9,27 @@
 #include <utility>
 
 #include "crab/cpp/details/consteval_counter.hh"
+#include "crab/cpp/details/macros.hh"
 
 namespace crab::core {
 
 template<typename T, typename InstanceTag>
-class Object {
+  requires std::move_constructible<T>
+class SafeObject {
  public:
   using instance_tag  = InstanceTag;
   using value_type    = T;
   using pointer       = std::allocator_traits<std::allocator<T>>::pointer;
   using const_pointer = std::allocator_traits<std::allocator<T>>::const_pointer;
 
-  Object(std::convertible_to<T> auto &&x)
+  SafeObject(std::convertible_to<T> auto &&x)
       : inner_ {std::forward<decltype(x)>(x)} {
   }
 
-  Object(const Object &)          = delete;
-  auto &operator=(const Object &) = delete;
-  Object(Object &&)               = delete;
-  auto &operator=(Object &&)      = delete;
+  SafeObject(const SafeObject &)      = delete;
+  auto &operator=(const SafeObject &) = delete;
+  SafeObject(SafeObject &&)           = delete;
+  auto &operator=(SafeObject &&)      = delete;
 
  private:
   T inner_;
@@ -38,30 +40,36 @@ class Object {
 
 template<typename T, typename InstanceTag = decltype([] {
                      })>
-Object(T &&) -> Object<std::decay_t<T>, InstanceTag>;
+SafeObject(T &&) -> SafeObject<std::decay_t<T>, InstanceTag>;
 
 template<
     typename U,
     std::size_t x = cpp::NextCounter<typename std::decay_t<U>::instance_tag>(),
-    typename      = decltype([] {
-    }),
+    typename      = CRAB_ALWAYS_NEW_TYPE,
     typename      = std::enable_if_t<x == 0>>
 auto Move(U &&value) {
   using object_t         = std::decay_t<U>;
   using value_type       = typename object_t::value_type;
   using new_instance_tag = decltype([] {
   });
-  return Object<value_type, new_instance_tag>(std::move(value.inner_));
+  return SafeObject<value_type, new_instance_tag>(std::move(value.inner_));
 }
 
 }  // namespace crab::core
+
+namespace crab {
+
+using core::Move;
+using core::SafeObject;
+
+}  // namespace crab
 
 namespace __compile_testing {
 
 using namespace crab::core;
 
 inline auto test_object() {
-  auto x  = Object {42};
+  auto x  = SafeObject {42};
   auto y  = Move(x);
   auto y2 = Move(y);
   (void)y2;
