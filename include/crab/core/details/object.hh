@@ -15,9 +15,9 @@ namespace crab::core {
 template<typename T, typename InstanceTag>
 class Object {
  public:
-  using instance_counter = cpp::ConstevalCounter<InstanceTag>;
-  using value_type       = T;
-  using pointer          = std::allocator_traits<std::allocator<T>>::pointer;
+  using instance_tag  = InstanceTag;
+  using value_type    = T;
+  using pointer       = std::allocator_traits<std::allocator<T>>::pointer;
   using const_pointer = std::allocator_traits<std::allocator<T>>::const_pointer;
 
   Object(std::convertible_to<T> auto &&x)
@@ -29,17 +29,10 @@ class Object {
   Object(Object &&)               = delete;
   auto &operator=(Object &&)      = delete;
 
-  template<typename Tag>
-  auto Move()
-    requires(instance_counter::next() == 0)
-  {
-    return Object<value_type, Tag>(std::move(inner_));
-  }
-
  private:
   T inner_;
 
-  template<typename U, typename Tag>
+  template<typename U, std::size_t, typename, typename>
   friend auto Move(U &&value);
 };
 
@@ -47,12 +40,18 @@ template<typename T, typename InstanceTag = decltype([] {
                      })>
 Object(T &&) -> Object<std::decay_t<T>, InstanceTag>;
 
-template<typename U, typename Tag = decltype([] {
-                     })>
-auto Move(U &&value)
-  requires(std::remove_cvref_t<U>::instance_counter::next() == 0)
-{
-  return value.template Move<Tag>();
+template<
+    typename U,
+    std::size_t x = cpp::NextCounter<typename std::decay_t<U>::instance_tag>(),
+    typename      = decltype([] {
+    }),
+    typename      = std::enable_if_t<x == 0>>
+auto Move(U &&value) {
+  using object_t         = std::decay_t<U>;
+  using value_type       = typename object_t::value_type;
+  using new_instance_tag = decltype([] {
+  });
+  return Object<value_type, new_instance_tag>(std::move(value.inner_));
 }
 
 }  // namespace crab::core
@@ -64,12 +63,13 @@ using namespace crab::core;
 inline auto test_object() {
   auto x  = Object {42};
   auto y  = Move(x);
-  auto y2 = Move(x);
+  auto y2 = Move(y);
+  (void)y2;
 
-  using counter = crab::cpp::ConstevalCounter<decltype([] {
-  })>;
-  static_assert(counter::next() == 0);
-  static_assert(counter::next() == 1);
+  using counter_tag = decltype([] {
+  });
+  static_assert(crab::cpp::NextCounter<counter_tag>() == 0);
+  static_assert(crab::cpp::NextCounter<counter_tag>() == 1);
 }
 
 }  // namespace __compile_testing
